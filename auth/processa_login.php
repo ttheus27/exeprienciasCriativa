@@ -1,11 +1,9 @@
 
 <?php
 
-// --- ADICIONE ESTAS LINHAS ---
 ini_set('display_errors', 1); // Mostra erros na tela
 ini_set('display_startup_errors', 1); // Mostra erros de inicialização
 error_reporting(E_ALL); // Reporta todos os tipos de erros
-// --- FIM DAS LINHAS ADICIONADAS ---
 
 session_start(); // Essencial para gerenciar o estado de login
 require_once '../mensagem/db.php'; // Conexão com o banco
@@ -73,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->close();
 
 } else {
-    // Se não for POST, redireciona para o login
+    // redireciona para o login
     header("Location: login.php");
     exit;
 }

@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 // Inicia a sessão ANTES de qualquer output ou require que use sessão
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -6,23 +9,28 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once '../includes/auth_check.php'; // Verifica se está logado
 include 'db.php'; // Conexão com o banco
 
-// Busca todas as mensagens, mas agora incluindo o user_id e o username
+// Busca todas as mensagens, incluindo o user_id e o username
 // Usamos LEFT JOIN para pegar o nome do usuário que criou a mensagem
-// Se user_id for NULL (mensagens antigas ou usuário deletado com SET NULL), username será NULL
-$sql = "SELECT m.*, u.username
+
+$sql = "SELECT m.*, u.username, t.nome AS tag_nome
         FROM mensagens m
-        LEFT JOIN usuarios u ON m.user_id = u.id
-        ORDER BY m.criado_em DESC";
+        LEFT JOIN usuarios u ON m.user_id = u.id   
+        LEFT JOIN tags t ON m.tag_id = t.id      
+        ORDER BY m.criado_em DESC";  
 $result = $conn->query($sql);
 
 // Verifica se a consulta foi bem-sucedida
 if (!$result) {
     // Em produção, logar o erro $conn->error
-    die("Erro ao buscar mensagens: " . $conn->error); // Para desenvolvimento
+    // Habilite display_errors para ver o erro durante o desenvolvimento
+    ini_set('display_errors', 1); // Temporário para debug
+    error_reporting(E_ALL);     // Temporário para debug
+    die("Erro ao buscar mensagens: " . $conn->error);
 }
 
-// Pega o ID do usuário logado para comparações
+// Pega o ID e a ROLE do usuário logado para comparações
 $logged_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+$logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< Pega a role da sessão
 
 ?>
 
@@ -31,9 +39,7 @@ $logged_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 <head>
     <meta charset="UTF-8">
     <title>Mensagens</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link para seu CSS -->
-    <!-- Adicionar link para o CSS geral se quiser usar o mesmo estilo -->
-    <!-- <link rel="stylesheet" href="../css/style.css"> -->
+    <link rel="stylesheet" href="style.css">
     <script>
         function confirmarExclusao(id) {
             // Pede confirmação antes de redirecionar para a exclusão
@@ -44,9 +50,12 @@ $logged_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
     </script>
 </head>
 <body>
-    <!-- Mensagem de Boas vindas e Logout (opcional, mas bom) -->
+    <!-- Mensagem de Boas vindas e Logout -->
     <div style="padding: 10px; background-color: #eee; margin-bottom: 20px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
-        <span>Bem-vindo, <?php echo htmlspecialchars($_SESSION['username']); ?>!</span>
+        <span>
+            Bem-vindo, <?php echo htmlspecialchars($_SESSION['username']); ?>!
+            (Role: <?php echo htmlspecialchars($logged_user_role); ?>) <!-- Mostra a role para debug -->
+        </span>
         <a href="../auth/logout.php" style="text-decoration: none; background-color: #dc3545; color: white; padding: 5px 10px; border-radius: 3px;">Sair</a>
     </div>
 
@@ -64,32 +73,41 @@ $logged_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
         }
     ?>
 
-    <a href="create.php" class="button-new">+ Nova Mensagem</a> <!-- Adicione uma classe se quiser estilizar -->
+    <a href="create.php" class="button-new">+ Nova Mensagem</a>
     <hr>
 
     <?php if ($result->num_rows > 0): ?>
         <?php while ($row = $result->fetch_assoc()): ?>
-            <div class="message-box"> <!-- Use a classe que você definiu em style.css -->
+            <div class="message-box">
+            <?php if (!empty($row['tag_nome'])): // <<< Usa o alias tag_nome ?>
+                    <span class="message-tag" style="background-color: #e2e3e5; color: #4f545c; padding: 3px 8px; border-radius: 10px; font-size: 0.8em; font-weight: bold; margin-right: 10px;">
+                        <?= htmlspecialchars($row['tag_nome']) ?>
+                    </span>
+                 <?php elseif ($row['tag_id']): // Se tem ID mas não nome (tag deletada?) ?>
+                     <span class="message-tag" style="/* estilo diferente talvez */">[Tag Removida]</span>
+                 <?php endif; ?>
                 <h3><?= htmlspecialchars($row['titulo']) ?></h3>
                 <p><?= nl2br(htmlspecialchars($row['conteudo'])) ?></p>
                 <small>
                     Criado em: <?= date('d/m/Y H:i:s', strtotime($row['criado_em'])) ?>
-                    <?php if (!empty($row['username'])): // Mostra o nome do usuário se existir ?>
-                        por: <?= htmlspecialchars($row['username']) ?>
-                    <?php elseif ($row['user_id']): // Se tiver user_id mas não username (usuário deletado talvez)?>
-                        por: (usuário desconhecido)
-                    <?php else: // Mensagem antiga sem user_id ?>
+                    <?php
+                        // !! ATENÇÃO: Se você usou 'usuario_id' no banco, troque $row['user_id'] por $row['usuario_id'] abaixo !!
+                        $owner_id = $row['user_id'] ?? null; // Pega o ID do dono da mensagem
+                    ?>
+                    <?php if (!empty($row['username'])): ?>
+                        por: <?= htmlspecialchars($row['username']) ?> 
+                    <?php elseif ($owner_id): ?>
+                        por: (usuário desconhecido) 
+                    <?php else: ?>
                          por: (autor não registrado)
                     <?php endif; ?>
                 </small><br>
 
                 <?php
-                // --- CONTROLE DE ACESSO PARA EDITAR/EXCLUIR ---
-                // Verifica se o usuário está logado E se o ID do usuário da mensagem é o mesmo do logado
-                if ($logged_user_id !== null && $row['user_id'] == $logged_user_id):
+
+                if ($logged_user_id !== null && ($owner_id == $logged_user_id || $logged_user_role === 'admin')):
                 ?>
                     <a href="edit.php?id=<?= $row['id'] ?>" class="button-edit">Editar</a>
-                    <!-- O onclick chama a função JavaScript para confirmar -->
                     <a href="#" onclick="confirmarExclusao(<?= $row['id'] ?>)" class="button-delete" style="color:red;">Excluir</a>
                 <?php endif; ?>
             </div>
@@ -100,7 +118,7 @@ $logged_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
     <?php
     // É importante fechar a conexão e o resultado quando terminar
-    $result->close();
+    if ($result) { $result->close(); } // Fecha o resultado se ele foi criado
     $conn->close();
     ?>
 </body>

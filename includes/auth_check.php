@@ -15,7 +15,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 }
 
 // Opcional: Verificar permissões específicas aqui, se necessário
-// Exemplo:
 // if ($_SESSION['role'] !== 'admin') {
 //     echo "Você não tem permissão para acessar esta página.";
 //     // Ou redirecionar para outra página
