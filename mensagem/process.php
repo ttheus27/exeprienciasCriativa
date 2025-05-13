@@ -1,11 +1,9 @@
 <?php
-// SEMPRE inicie a sessão em arquivos que precisam dela ou interagem com auth
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once '../includes/auth_check.php'; // Garante que o usuário está logado para qualquer ação
-include 'db.php'; // Inclui a conexão com o banco
-
+require_once '../includes/auth_check.php'; 
+include 'db.php'; 
 // PEGA O ID E A ROLE DO USUÁRIO LOGADO
 $logged_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
@@ -14,7 +12,6 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
 if (isset($_POST['criar'])) {
     // Verifica se o usuário está logado 
     if (!isset($_SESSION['user_id'])) {
-         // Poderia redirecionar para login ou mostrar erro
         die("Erro: Usuário não autenticado para criar mensagem.");
     }
 
@@ -26,11 +23,10 @@ if (isset($_POST['criar'])) {
     // Validação simples
     if (empty($titulo) || empty($conteudo)) {
         $_SESSION['message_error'] = "Título e conteúdo são obrigatórios.";
-        header("Location: create.php"); // Volta para o formulário de criação
+        header("Location: create.php"); 
         exit;
     }
 
-    // Insere incluindo o user_id
     $stmt = $conn->prepare("INSERT INTO mensagens (titulo, conteudo, user_id, tag_id) VALUES (?, ?, ?, ?)");
     // "ssii" -> string, string, integer (user_id), integer (tag_id)
     $stmt->bind_param("ssii", $titulo, $conteudo, $user_id, $tag_id);
@@ -38,7 +34,6 @@ if (isset($_POST['criar'])) {
     if ($stmt->execute()) {
         $_SESSION['message_success'] = "Mensagem criada com sucesso!";
     } else {
-        // Em produção, logar o erro $stmt->error
         $_SESSION['message_error'] = "Erro ao criar a mensagem.";
     }
     $stmt->close();
@@ -48,7 +43,6 @@ if (isset($_POST['criar'])) {
 
 // Editar mensagem
 if (isset($_POST['editar'])) {
-    // Verifica se o usuário está logado
     if ($logged_user_id === null) {
         die("Erro: Usuário não autenticado para editar mensagem.");
     }
@@ -59,16 +53,13 @@ if (isset($_POST['editar'])) {
     $tag_id = isset($_POST['tag_id']) ? (int)$_POST['tag_id'] : 0;
     $logged_user_id = $_SESSION['user_id'];
 
-    // Validação simples
     if (empty($titulo) || empty($conteudo) || empty($id)) {
         $_SESSION['message_error'] = "Dados inválidos para edição.";
-        // Redirecionar para um local apropriado, talvez a index ou a edit com erro
         header("Location: index.php");
         exit;
     }
 
-    // --- VERIFICAÇÃO DE AUTORIZAÇÃO ---
-    // Antes de editar, verifica se o usuário logado é o dono da mensagem
+    // VERIFICAÇÃO DE AUTORIZAÇÃO 
     $stmt_check = $conn->prepare("SELECT user_id FROM mensagens WHERE id = ?");
     $stmt_check->bind_param("i", $id);
     $stmt_check->execute();
@@ -76,11 +67,11 @@ if (isset($_POST['editar'])) {
 
     if ($result_check->num_rows === 1) {
         $mensagem_owner = $result_check->fetch_assoc();
-        // !! ATENÇÃO: Se usou 'usuario_id', troque $mensagem_owner['user_id'] por $mensagem_owner['usuario_id'] abaixo !!
+
         $owner_id = $mensagem_owner['user_id'] ?? null; // Pega o ID do dono
         $stmt_check->close();
 
-        // 2. Verificar permissão: Dono OU Admin
+        // Verificar permissão: Dono OU Admin
         if ($owner_id == $logged_user_id || $logged_user_role === 'admin') {
             // Permissão concedida! Executa o UPDATE.
             $stmt_update = $conn->prepare("UPDATE mensagens SET titulo = ?, conteudo = ?, tag_id = ? WHERE id = ?");            
@@ -94,12 +85,10 @@ if (isset($_POST['editar'])) {
             $stmt_update->close();
 
         } else {
-            // Não é o dono NEM admin! Acesso negado.
             $_SESSION['message_error'] = "Você não tem permissão para editar esta mensagem.";
         }
     } else {
-        // Mensagem com o ID fornecido não foi encontrada
-        $stmt_check->close(); // Fecha mesmo se não encontrou
+        $stmt_check->close(); 
         $_SESSION['message_error'] = "Mensagem não encontrada para edição (ID: $id).";
     }
 
@@ -109,12 +98,11 @@ if (isset($_POST['editar'])) {
 
 // Excluir mensagem
 if (isset($_GET['excluir'])) {
-    // Verifica se o usuário está logado
     if ($logged_user_id === null) {
         die("Erro: Usuário não autenticado para excluir mensagem.");
     }
 
-    $id = isset($_GET['excluir']) ? (int)$_GET['excluir'] : 0; // Garante que ID é inteiro
+    $id = isset($_GET['excluir']) ? (int)$_GET['excluir'] : 0; 
 
     if ($id <= 0) {
          $_SESSION['message_error'] = "ID inválido para exclusão.";
@@ -122,9 +110,8 @@ if (isset($_GET['excluir'])) {
          exit;
     }
 
-    // --- VERIFICAÇÃO DE AUTORIZAÇÃO MODIFICADA ---
+    // VERIFICAÇÃO DE AUTORIZAÇÃO MODIFICADA
     // 1. Buscar o ID do dono da mensagem
-    // !! ATENÇÃO: Se você usou 'usuario_id' no banco, troque user_id por usuario_id abaixo !!
     $stmt_check = $conn->prepare("SELECT user_id FROM mensagens WHERE id = ?");
     $stmt_check->bind_param("i", $id);
     $stmt_check->execute();
@@ -132,13 +119,11 @@ if (isset($_GET['excluir'])) {
 
     if ($result_check->num_rows === 1) {
         $mensagem_owner = $result_check->fetch_assoc();
-         // !! ATENÇÃO: Se usou 'usuario_id', troque $mensagem_owner['user_id'] por $mensagem_owner['usuario_id'] abaixo !!
-        $owner_id = $mensagem_owner['user_id'] ?? null; // Pega o ID do dono
+        $owner_id = $mensagem_owner['user_id'] ?? null; 
         $stmt_check->close();
 
         // 2. Verificar permissão: Dono OU Admin
         if ($owner_id == $logged_user_id || $logged_user_role === 'admin') {
-            // Permissão concedida! Executa o DELETE.
             $stmt_delete = $conn->prepare("DELETE FROM mensagens WHERE id = ?");
             $stmt_delete->bind_param("i", $id);
 
@@ -150,12 +135,11 @@ if (isset($_GET['excluir'])) {
              $stmt_delete->close();
 
         } else {
-            // Não é o dono NEM admin! Acesso negado.
             $_SESSION['message_error'] = "Você não tem permissão para excluir esta mensagem.";
         }
     } else {
          // Mensagem com o ID fornecido não foi encontrada
-         $stmt_check->close(); // Fecha mesmo se não encontrou
+         $stmt_check->close(); 
          $_SESSION['message_error'] = "Mensagem não encontrada para exclusão (ID: $id).";
     }
 
@@ -163,12 +147,6 @@ if (isset($_GET['excluir'])) {
     exit;
 }
 
-// Se nenhuma ação foi reconhecida, redireciona para index
-// Isso evita acesso direto ao process.php sem parâmetros
-// header("Location: index.php");
-// exit; // Descomente se quiser esse comportamento
-
-// Fecha a conexão no final se ainda estiver aberta (embora os exits anteriores devam ter encerrado o script)
 if (isset($conn) && $conn instanceof mysqli) {
     $conn->close();
 }

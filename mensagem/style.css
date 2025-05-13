@@ -58,3 +58,21 @@ button:hover {
     border-left: 4px solid #3498db;
     border-radius: 6px;
 }
+
+.botao{
+    margin-left: 15px; 
+    padding: 5px 8px; 
+    background-color: #17a2b8; 
+    color: white; 
+    text-decoration: none; 
+    border-radius: 3px;
+}
+
+#botaoeditar{
+    margin-left: 15px; 
+    padding: 5px 8px; 
+    background-color: #17a2b8; 
+    color: white; 
+    text-decoration: none; 
+    border-radius: 3px;
+}

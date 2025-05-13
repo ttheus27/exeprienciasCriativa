@@ -2,15 +2,14 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-// Inicia a sessão ANTES de qualquer output ou require que use sessão
+
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once '../includes/auth_check.php'; // Verifica se está logado
-include 'db.php'; // Conexão com o banco
+require_once '../includes/auth_check.php'; 
+include 'db.php';
 
-// Busca todas as mensagens, incluindo o user_id e o username
-// Usamos LEFT JOIN para pegar o nome do usuário que criou a mensagem
 
 $sql = "SELECT m.*, u.username, t.nome AS tag_nome
         FROM mensagens m
@@ -21,8 +20,6 @@ $result = $conn->query($sql);
 
 // Verifica se a consulta foi bem-sucedida
 if (!$result) {
-    // Em produção, logar o erro $conn->error
-    // Habilite display_errors para ver o erro durante o desenvolvimento
     ini_set('display_errors', 1); // Temporário para debug
     error_reporting(E_ALL);     // Temporário para debug
     die("Erro ao buscar mensagens: " . $conn->error);
@@ -54,8 +51,9 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
     <div style="padding: 10px; background-color: #eee; margin-bottom: 20px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
         <span>
             Bem-vindo, <?php echo htmlspecialchars($_SESSION['username']); ?>!
-            (Role: <?php echo htmlspecialchars($logged_user_role); ?>) <!-- Mostra a role para debug -->
+            (Role: <?php echo htmlspecialchars($logged_user_role); ?>) 
         </span>
+        <a href="../auth/editar_perfil.php" class = "botao" id= "botaoeditar">Editar conta</a>
         <a href="../auth/logout.php" style="text-decoration: none; background-color: #dc3545; color: white; padding: 5px 10px; border-radius: 3px;">Sair</a>
     </div>
 
@@ -79,11 +77,11 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
     <?php if ($result->num_rows > 0): ?>
         <?php while ($row = $result->fetch_assoc()): ?>
             <div class="message-box">
-            <?php if (!empty($row['tag_nome'])): // <<< Usa o alias tag_nome ?>
+            <?php if (!empty($row['tag_nome'])): ?>
                     <span class="message-tag" style="background-color: #e2e3e5; color: #4f545c; padding: 3px 8px; border-radius: 10px; font-size: 0.8em; font-weight: bold; margin-right: 10px;">
                         <?= htmlspecialchars($row['tag_nome']) ?>
                     </span>
-                 <?php elseif ($row['tag_id']): // Se tem ID mas não nome (tag deletada?) ?>
+                 <?php elseif ($row['tag_id']): ?>
                      <span class="message-tag" style="/* estilo diferente talvez */">[Tag Removida]</span>
                  <?php endif; ?>
                 <h3><?= htmlspecialchars($row['titulo']) ?></h3>
@@ -91,8 +89,8 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                 <small>
                     Criado em: <?= date('d/m/Y H:i:s', strtotime($row['criado_em'])) ?>
                     <?php
-                        // !! ATENÇÃO: Se você usou 'usuario_id' no banco, troque $row['user_id'] por $row['usuario_id'] abaixo !!
-                        $owner_id = $row['user_id'] ?? null; // Pega o ID do dono da mensagem
+
+                        $owner_id = $row['user_id'] ?? null; 
                     ?>
                     <?php if (!empty($row['username'])): ?>
                         por: <?= htmlspecialchars($row['username']) ?> 
@@ -118,7 +116,7 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
 
     <?php
     // É importante fechar a conexão e o resultado quando terminar
-    if ($result) { $result->close(); } // Fecha o resultado se ele foi criado
+    if ($result) { $result->close(); } 
     $conn->close();
     ?>
 </body>

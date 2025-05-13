@@ -26,11 +26,11 @@ session_start();
         ?>
 
         <form action="processa_login.php" method="post">
-            <div class="form-group"> <!-- Agrupa Label e Input -->
-                <label for="username">Usuário:</label>
+            <div class="form-group">
+                <label for="username">Usuário ou email:</label>
                 <input type="text" id="username" name="username" required>
             </div>
-            <div class="form-group"> <!-- Agrupa Label e Input -->
+            <div class="form-group"> 
                 <label for="password">Senha:</label>
                 <input type="password" id="password" name="password" required>
             </div>

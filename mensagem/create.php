@@ -1,15 +1,12 @@
 <?php
-// Inicia a sessão ANTES de qualquer output ou require que use sessão
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// apenas usuários logados possam ACESSAR a página de criação
 require_once '../includes/auth_check.php';
 include 'db.php';
-// <<< BUSCAR TAGS DO BANCO >>>
+// BUSCAR TAGS DO BANCO
 $tags_result = $conn->query("SELECT id, nome FROM tags ORDER BY nome ASC");
 if (!$tags_result) {
-    // Lidar com erro ao buscar tags (logar, mostrar mensagem)
     die("Erro ao buscar tags: " . $conn->error);
 }
 ?>
@@ -18,13 +15,12 @@ if (!$tags_result) {
 <head>
     <meta charset="UTF-8">
     <title>Criar Mensagem</title>
-    <link rel="stylesheet" href="style.css"> <!-- Seu CSS de mensagens -->
-    <!-- <link rel="stylesheet" href="../css/style.css"> --> <!-- CSS geral opcional -->
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
     <h1>Nova Mensagem</h1>
 
-     <!-- Exibir mensagens de erro, se houver (ex: se validação falhar no process.php) -->
+     <!-- Exibir mensagens de erro -->
     <?php
         if (isset($_SESSION['message_error'])) {
             echo '<div class="message error-message" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 4px;">' . htmlspecialchars($_SESSION['message_error']) . '</div>';
@@ -33,7 +29,7 @@ if (!$tags_result) {
     ?>
 
     <form action="process.php" method="POST">
-         <div class="form-group"> <!-- Similar ao formulário de login/cadastro -->
+         <div class="form-group"> 
              <label for="titulo">Título:</label>
             <input type="text" id="titulo" name="titulo" placeholder="Título" required>
         </div>
@@ -43,10 +39,10 @@ if (!$tags_result) {
         </div>
         <div class="form-group">
             <label for="tag_id">Tag:</label>
-            <select name="tag_id" id="tag_id" required> <?php // <<< Nome do campo é tag_id ?>
+            <select name="tag_id" id="tag_id" required> <?php  ?>
                 <option value="">-- Selecione uma Tag --</option>
                 <?php while ($tag = $tags_result->fetch_assoc()): ?>
-                    <option value="<?= $tag['id'] ?>"> <?php // <<< O valor é o ID da tag ?>
+                    <option value="<?= $tag['id'] ?>"> <?php?>
                         <?= htmlspecialchars($tag['nome']) ?>
                     </option>
                 <?php endwhile; ?>

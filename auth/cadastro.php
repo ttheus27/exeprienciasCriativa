@@ -27,21 +27,30 @@ session_start();
         ?>
 
         <form action="processa_cadastro.php" method="post">
-            <div class="form-group"> <!-- Agrupa Label e Input -->
+            <div class="form-group"> 
                 <label for="username">Usuário:</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username" required
+                value="<?= htmlspecialchars($_SESSION['form_data']['username'] ?? '') ?>"> 
             </div>
-            <div class="form-group"> <!-- Agrupa Label e Input -->
-                <label for="password">Senha:</label>
+            
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required
+                       value="<?= htmlspecialchars($_SESSION['form_data']['email'] ?? '') ?>"> 
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha (mínimo 8 caracteres):</label> 
                 <input type="password" id="password" name="password" required>
             </div>
-            <div class="form-group"> <!-- Agrupa Label e Input -->
+            <div class="form-group">
                 <label for="confirm_password">Confirmar Senha:</label>
                 <input type="password" id="confirm_password" name="confirm_password" required>
             </div>
             <button type="submit">Cadastrar</button>
         </form>
         <p>Já tem uma conta? <a href="login.php">Faça login aqui</a>.</p>
-    </div> 
+    </div>
+    <?php unset($_SESSION['form_data']); // Limpa os dados do formulário da sessão após uso ?>
 </body>
 </html>
