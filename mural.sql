@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Tempo de geração: 24/04/2025 às 01:51
+-- Tempo de geração: 27/04/2025 às 20:04
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -32,16 +32,40 @@ CREATE TABLE `mensagens` (
   `titulo` varchar(100) DEFAULT NULL,
   `conteudo` text DEFAULT NULL,
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
-  `user_id` int(11) DEFAULT NULL
+  `user_id` int(11) DEFAULT NULL,
+  `tag_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `mensagens`
 --
 
-INSERT INTO `mensagens` (`id`, `titulo`, `conteudo`, `criado_em`, `user_id`) VALUES
-(3, 'matheus', 'matheus', '2025-04-23 23:48:16', 1),
-(4, 'joao', 'joao', '2025-04-23 23:48:58', 2);
+INSERT INTO `mensagens` (`id`, `titulo`, `conteudo`, `criado_em`, `user_id`, `tag_id`) VALUES
+(5, 'joao', 'joao a ghlhjjh', '2025-04-24 00:13:39', 2, NULL),
+(6, 'matheus', 'matheus aaaa', '2025-04-24 00:34:04', 1, NULL),
+(7, 'asdfg', 'ssdtyubhijnklmç,', '2025-04-24 23:34:00', 1, 1),
+(8, 'sdfghjk', 'qwer567890-', '2025-04-26 22:10:16', 1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `tags`
+--
+
+CREATE TABLE `tags` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `tags`
+--
+
+INSERT INTO `tags` (`id`, `nome`) VALUES
+(4, 'Atualização'),
+(3, 'Aviso'),
+(1, 'Informativo'),
+(2, 'Procura-se');
 
 -- --------------------------------------------------------
 
@@ -54,7 +78,8 @@ CREATE TABLE `usuarios` (
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` varchar(20) DEFAULT 'user',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `email` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -62,7 +87,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `username`, `password`, `role`, `created_at`) VALUES
-(1, 'matheus', '$2y$10$gIP2Bmul3sEF8XMbPVj9zuUImvyriWFKC6u2hIM/ntvJu1TVOKtLS', 'user', '2025-04-23 23:16:44'),
+(1, 'matheus', '$2y$10$gIP2Bmul3sEF8XMbPVj9zuUImvyriWFKC6u2hIM/ntvJu1TVOKtLS', 'admin', '2025-04-23 23:16:44'),
 (2, 'joao', '$2y$10$GzsxNA4jZVbR8WvlghzoleAXfbsrScg3lSEq2t08x92OHY0bWJf9m', 'user', '2025-04-23 23:48:42');
 
 --
@@ -74,7 +99,15 @@ INSERT INTO `usuarios` (`id`, `username`, `password`, `role`, `created_at`) VALU
 --
 ALTER TABLE `mensagens`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_user_id` (`user_id`);
+  ADD KEY `fk_user_id` (`user_id`),
+  ADD KEY `fk_tag_id` (`tag_id`);
+
+--
+-- Índices de tabela `tags`
+--
+ALTER TABLE `tags`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nome` (`nome`);
 
 --
 -- Índices de tabela `usuarios`
@@ -91,6 +124,12 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `mensagens`
 --
 ALTER TABLE `mensagens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT de tabela `tags`
+--
+ALTER TABLE `tags`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
@@ -107,6 +146,7 @@ ALTER TABLE `usuarios`
 -- Restrições para tabelas `mensagens`
 --
 ALTER TABLE `mensagens`
+  ADD CONSTRAINT `fk_tag_id` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
