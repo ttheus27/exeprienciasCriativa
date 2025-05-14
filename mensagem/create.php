@@ -39,10 +39,10 @@ if (!$tags_result) {
         </div>
         <div class="form-group">
             <label for="tag_id">Tag:</label>
-            <select name="tag_id" id="tag_id" required> <?php  ?>
+            <select name="tag_id" id="tag_id" required> 
                 <option value="">-- Selecione uma Tag --</option>
                 <?php while ($tag = $tags_result->fetch_assoc()): ?>
-                    <option value="<?= $tag['id'] ?>"> <?php?>
+                    <option value="<?= $tag['id'] ?>">
                         <?= htmlspecialchars($tag['nome']) ?>
                     </option>
                 <?php endwhile; ?>

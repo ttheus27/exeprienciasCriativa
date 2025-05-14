@@ -61,18 +61,31 @@ button:hover {
 
 .botao{
     margin-left: 15px; 
-    padding: 5px 8px; 
-    background-color: #17a2b8; 
-    color: white; 
+    padding: 8px 10px; 
     text-decoration: none; 
     border-radius: 3px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#botaoeditar{
-    margin-left: 15px; 
-    padding: 5px 8px; 
+.botao-editar {
     background-color: #17a2b8; 
     color: white; 
-    text-decoration: none; 
-    border-radius: 3px;
 }
+
+.botao-editar:hover {
+    background-color: #117585; 
+    transform: scale(1.02);
+    text-decoration: none; 
+}
+
+.botao-excluir {
+    background-color: #dc3545;
+    color: white;
+}
+
+.botao-excluir:hover {
+    background-color: #b42a38;
+    transform: scale(1.02);
+    text-decoration: none; 
+}
+

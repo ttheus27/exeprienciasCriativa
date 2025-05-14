@@ -53,8 +53,8 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
             Bem-vindo, <?php echo htmlspecialchars($_SESSION['username']); ?>!
             (Role: <?php echo htmlspecialchars($logged_user_role); ?>) 
         </span>
-        <a href="../auth/editar_perfil.php" class = "botao" id= "botaoeditar">Editar conta</a>
-        <a href="../auth/logout.php" style="text-decoration: none; background-color: #dc3545; color: white; padding: 5px 10px; border-radius: 3px;">Sair</a>
+        <a href="../auth/editar_perfil.php" class = "botao botao-editar">Editar conta</a>
+        <a href="../auth/logout.php" class = "botao botao-excluir">Sair</a>
     </div>
 
     <h1>Mensagens</h1>
@@ -85,6 +85,7 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                      <span class="message-tag" style="/* estilo diferente talvez */">[Tag Removida]</span>
                  <?php endif; ?>
                 <h3><?= htmlspecialchars($row['titulo']) ?></h3>
+                <!-- <h5><?= htmlspecialchars($row['id']) ?></h5> -->
                 <p><?= nl2br(htmlspecialchars($row['conteudo'])) ?></p>
                 <small>
                     Criado em: <?= date('d/m/Y H:i:s', strtotime($row['criado_em'])) ?>
@@ -104,9 +105,9 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                 <?php
 
                 if ($logged_user_id !== null && ($owner_id == $logged_user_id || $logged_user_role === 'admin')):
-                ?>
-                    <a href="edit.php?id=<?= $row['id'] ?>" class="button-edit">Editar</a>
-                    <a href="#" onclick="confirmarExclusao(<?= $row['id'] ?>)" class="button-delete" style="color:red;">Excluir</a>
+                ?><br>
+                    <a href="edit.php?id=<?= $row['id'] ?>"  class = "botao botao-editar">Editar</a>
+                    <a href="#" onclick="confirmarExclusao(<?= $row['id'] ?>)"  class = "botao botao-excluir">Excluir</a>
                 <?php endif; ?>
             </div>
         <?php endwhile; ?>
