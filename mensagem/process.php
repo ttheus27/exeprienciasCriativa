@@ -20,6 +20,11 @@ if (isset($_POST['criar'])) {
     $tag_id = isset($_POST['tag_id']) ? (int)$_POST['tag_id'] : 0; // PEGA O tag_id 
     $user_id = $_SESSION['user_id']; // Pega o ID do usuário logado da SESSÃO
 
+    // Upload da imagem
+    $uploadDir = 'uploads/';
+    $imageName = basename($_FILES['image']['name']);
+    $imagePath = $uploadDir . time() . '_' . $imageName;
+
     // Validação simples
     if (empty($titulo) || empty($conteudo)) {
         $_SESSION['message_error'] = "Título e conteúdo são obrigatórios.";
@@ -27,11 +32,14 @@ if (isset($_POST['criar'])) {
         exit;
     }
 
-    $stmt = $conn->prepare("INSERT INTO mensagens (titulo, conteudo, user_id, tag_id) VALUES (?, ?, ?, ?)");
-    // "ssii" -> string, string, integer (user_id), integer (tag_id)
-    $stmt->bind_param("ssii", $titulo, $conteudo, $user_id, $tag_id);
-
-    if ($stmt->execute()) {
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
+        // Inserir no banco
+        $stmt = $conn->prepare("INSERT INTO mensagens (titulo, conteudo, user_id, tag_id, image_path) VALUES (?, ?, ?, ?, ?)");
+        // "ssiis" -> string, string, integer (user_id), integer (tag_id), string
+        $stmt->bind_param("ssiis", $titulo, $conteudo, $user_id, $tag_id, $imagePath);
+        $stmt->execute();
+        $stmt->close();
+        
         $_SESSION['message_success'] = "Mensagem criada com sucesso!";
 
         $stmtNotif = $conn->prepare("INSERT INTO notificacoes (usuario_id, mensagem) VALUES (?, ?)");
@@ -44,7 +52,7 @@ if (isset($_POST['criar'])) {
     } else {
         $_SESSION['message_error'] = "Erro ao criar a mensagem.";
     }
-    $stmt->close();
+    
     header("Location: index.php");
     exit;
 }
