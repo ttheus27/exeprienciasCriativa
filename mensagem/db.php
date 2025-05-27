@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$db = 'update_terca';
+$db = 'mural';
 $user = 'root';
 $pass = '';
 

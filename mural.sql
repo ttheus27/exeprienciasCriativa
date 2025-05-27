@@ -76,6 +76,13 @@ CREATE TABLE `tags` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Índices de tabela `tags`
+--
+ALTER TABLE `tags`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nome` (`nome`);
+
+--
 -- Despejando dados para a tabela `tags`
 --
 
@@ -97,8 +104,28 @@ CREATE TABLE `usuarios` (
   `password` varchar(255) NOT NULL,
   `role` varchar(20) DEFAULT 'user',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `telefone` VARCHAR(20),
+  `area_atuacao` VARCHAR(255),
   `email` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Índices de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+
+
+CREATE TABLE usuario_interesses (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `usuario_id` INT NOT NULL,
+    `tag_id` INT NOT NULL,
+    FOREIGN KEY (`usuario_id`) REFERENCES `usuarios`(`id`),
+    FOREIGN KEY (`tag_id`) REFERENCES `tags`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 --
 -- Despejando dados para a tabela `usuarios`
@@ -120,20 +147,6 @@ ALTER TABLE `mensagens`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_user_id` (`user_id`),
   ADD KEY `fk_tag_id` (`tag_id`);
-
---
--- Índices de tabela `tags`
---
-ALTER TABLE `tags`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `nome` (`nome`);
-
---
--- Índices de tabela `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- AUTO_INCREMENT para tabelas despejadas
@@ -172,3 +185,12 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+CREATE TABLE notificacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    mensagem TEXT NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    lido BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
