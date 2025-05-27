@@ -26,7 +26,7 @@ if ($stmt_user) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Perfil</title>
-    <link rel="stylesheet" href="../css/style.css"> <!-- Seu CSS principal -->
+    <link rel="stylesheet" href="ExperienciasCriativamensagem/style.css"> <!-- Seu CSS principal -->
 </head>
 <body>
     <div class="auth-container"> <!-- Reutilizando o container de auth -->
@@ -69,6 +69,7 @@ if ($stmt_user) {
             </div>
 
             <button type="submit">Salvar Alterações</button>
+            
         </form>
         <p style="margin-top: 15px; text-align:center;"><a href="../mensagem/index.php">Voltar para Mensagens</a></p>
     </div>

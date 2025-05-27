@@ -17,6 +17,7 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>Notificações</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Minhas Notificações</h1>
@@ -25,5 +26,8 @@ $result = $stmt->get_result();
             <li><?= htmlspecialchars($row['mensagem']) ?> - <?= $row['criado_em'] ?></li>
         <?php endwhile; ?>
     </ul>
+    <a href="index.php">
+        <button>Voltar</button>
+    </a>
 </body>
 </html>
