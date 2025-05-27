@@ -41,6 +41,14 @@ if (isset($_POST['criar'])) {
         $stmt->close();
         
         $_SESSION['message_success'] = "Mensagem criada com sucesso!";
+
+        $stmtNotif = $conn->prepare("INSERT INTO notificacoes (usuario_id, mensagem) VALUES (?, ?)");
+        $msg = "Sua mensagem '$titulo' foi criada com sucesso e está em análise.";
+        $stmtNotif->bind_param("is", $user_id, $msg);
+        $stmtNotif->execute();
+
+        // Optional: Notify admin or related users too
+
     } else {
         $_SESSION['message_error'] = "Erro ao criar a mensagem.";
     }
@@ -87,6 +95,12 @@ if (isset($_POST['editar'])) {
                 
             if ($stmt_update->execute()) {
                 $_SESSION['message_success'] = "Mensagem atualizada com sucesso!";
+
+                $stmtNotif = $conn->prepare("INSERT INTO notificacoes (usuario_id, mensagem) VALUES (?, ?)");
+                $msg = "Sua mensagem '$titulo' foi modificada com sucesso!.";
+                $stmtNotif->bind_param("is", $owner_id, $msg);
+                $stmtNotif->execute();
+
             } else {
                 $_SESSION['message_error'] = "Erro ao atualizar a mensagem: " . $stmt_update->error;
             }
@@ -136,7 +150,12 @@ if (isset($_GET['excluir'])) {
             $stmt_delete->bind_param("i", $id);
 
             if ($stmt_delete->execute()) {
-                 $_SESSION['message_success'] = "Mensagem excluída com sucesso!";
+                $_SESSION['message_success'] = "Mensagem excluída com sucesso!";
+                $stmtNotif = $conn->prepare("INSERT INTO notificacoes (usuario_id, mensagem) VALUES (?, ?)");
+                $msg = "Sua mensagem foi excluída por um administrador.";
+                $stmtNotif->bind_param("is", $owner_id, $msg);
+                $stmtNotif->execute();
+
             } else {
                 $_SESSION['message_error'] = "Erro ao excluir a mensagem: " . $stmt_delete->error;
             }
