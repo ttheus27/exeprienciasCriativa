@@ -54,6 +54,9 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
             (Role: <?php echo htmlspecialchars($logged_user_role); ?>) 
         </span>
         <a href="../auth/editar_perfil.php" class = "botao botao-editar">Editar conta</a>
+        <a href="notificacoes.php">
+            <button>Ver Notificações</button>
+        </a>
         <a href="../auth/logout.php" class = "botao botao-excluir">Sair</a>
     </div>
 
