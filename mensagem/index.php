@@ -57,6 +57,7 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
         <a href="notificacoes.php">
             <button>Ver Notificações</button>
         </a>
+<<<<<<< HEAD
         <a href="vincular_perfil.php">
             <button>Vincular Perfil</button>
         </a>
@@ -64,6 +65,8 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
             <button>Ver Perfil</button>
         </a>
 
+=======
+>>>>>>> main
         <a href="../auth/logout.php" class = "botao botao-excluir">Sair</a>
     </div>
 
@@ -96,6 +99,9 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                  <?php endif; ?>
                 <h3><?= htmlspecialchars($row['titulo']) ?></h3>
                 <!-- <h5><?= htmlspecialchars($row['id']) ?></h5> -->
+                <?php if (!empty($row['image_path'])): ?>
+                    <img src="<?= htmlspecialchars($row['image_path']) ?>" style="max-height: 200px; height: auto; margin-top: 10px;">
+                <?php endif; ?>
                 <p><?= nl2br(htmlspecialchars($row['conteudo'])) ?></p>
                 <small>
                     Criado em: <?= date('d/m/Y H:i:s', strtotime($row['criado_em'])) ?>
