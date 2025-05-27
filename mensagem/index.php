@@ -57,7 +57,6 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
         <a href="notificacoes.php">
             <button>Ver Notificações</button>
         </a>
-<<<<<<< HEAD
         <a href="vincular_perfil.php">
             <button>Vincular Perfil</button>
         </a>
@@ -65,8 +64,6 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
             <button>Ver Perfil</button>
         </a>
 
-=======
->>>>>>> main
         <a href="../auth/logout.php" class = "botao botao-excluir">Sair</a>
     </div>
 
