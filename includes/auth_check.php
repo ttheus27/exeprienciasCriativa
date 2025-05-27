@@ -1,4 +1,3 @@
-
 <?php
 // Este script deve ser incluído no início das páginas protegidas
 if (session_status() === PHP_SESSION_NONE) {
@@ -11,6 +10,4 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: ../auth/login.php");
     exit; 
 }
-
-
 ?>
