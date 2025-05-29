@@ -207,6 +207,7 @@ if ($stmt_user) {
             background-color: #5a6268;
         }
     </style>
+    <link rel="stylesheet" href="ExperienciasCriativamensagem/style.css"> <!-- Seu CSS principal -->
 </head>
 <body>
     <div class="auth-container">
@@ -248,6 +249,7 @@ if ($stmt_user) {
             </div>
 
             <button type="submit">Salvar Alterações</button>
+            
         </form>
 
         <!-- ****** SEPARADOR E BOTÃO PARA EXCLUIR CONTA ****** -->
