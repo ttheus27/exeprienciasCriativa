@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once '../includes/auth_check.php'; 
+require_once '../includes/auth_check.php';
 include 'db.php';
 
 
@@ -15,7 +15,7 @@ $sql = "SELECT m.*, u.username, t.nome AS tag_nome
         FROM mensagens m
         LEFT JOIN usuarios u ON m.user_id = u.id   
         LEFT JOIN tags t ON m.tag_id = t.id      
-        ORDER BY m.criado_em DESC";  
+        ORDER BY m.criado_em DESC";
 $result = $conn->query($sql);
 
 // Verifica se a consulta foi bem-sucedida
@@ -33,6 +33,7 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Mensagens</title>
@@ -46,14 +47,16 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
         }
     </script>
 </head>
+
 <body>
     <!-- Mensagem de Boas vindas e Logout -->
-    <div style="padding: 10px; background-color: #eee; margin-bottom: 20px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+    <div
+        style="padding: 10px; background-color: #eee; margin-bottom: 20px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
         <span>
             Bem-vindo, <?php echo htmlspecialchars($_SESSION['username']); ?>!
-            (Role: <?php echo htmlspecialchars($logged_user_role); ?>) 
+            (Role: <?php echo htmlspecialchars($logged_user_role); ?>)
         </span>
-        <a href="../auth/editar_perfil.php" class = "botao botao-editar">Editar conta</a>
+        <a href="../auth/editar_perfil.php" class="botao botao-editar">Editar conta</a>
         <a href="notificacoes.php">
             <button>Ver Notificações</button>
         </a>
@@ -64,74 +67,136 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
             <button>Ver Perfil</button>
         </a>
 
-        <a href="../auth/logout.php" class = "botao botao-excluir">Sair</a>
+        <a href="../auth/logout.php" class="botao botao-excluir">Sair</a>
     </div>
 
-    <h1>Mensagens</h1>
+    <div class="msg-header">
 
-    <!-- Exibir mensagens de feedback da sessão (sucesso/erro) -->
-    <?php
+        <div class="header-title">
+
+            <h1>Mensagens</h1>
+
+            <a href="create.php" class="button-new"><button style="margin-top: 20px">+ Nova Mensagem</button></a>
+        </div>
+        <!-- Exibir mensagens de feedback da sessão (sucesso/erro) -->
+        <?php
         if (isset($_SESSION['message_success'])) {
-            echo '<div class="message success-message" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; margin-bottom: 15px; border-radius: 4px;">' . htmlspecialchars($_SESSION['message_success']) . '</div>';
+            echo '<div class="message success-message" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; margin-bottom: 10px; border-radius: 4px;">' . htmlspecialchars($_SESSION['message_success']) . '</div>';
             unset($_SESSION['message_success']);
         }
         if (isset($_SESSION['message_error'])) {
-            echo '<div class="message error-message" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 4px;">' . htmlspecialchars($_SESSION['message_error']) . '</div>';
+            echo '<div class="message error-message" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 10px; border-radius: 4px;">' . htmlspecialchars($_SESSION['message_error']) . '</div>';
             unset($_SESSION['message_error']);
         }
-    ?>
-
-    <a href="create.php" class="button-new">+ Nova Mensagem</a>
+        ?>
+    </div>
     <hr>
 
     <?php if ($result->num_rows > 0): ?>
-        <?php while ($row = $result->fetch_assoc()): ?>
-            <div class="message-box">
-            <?php if (!empty($row['tag_nome'])): ?>
-                    <span class="message-tag" style="background-color: #e2e3e5; color: #4f545c; padding: 3px 8px; border-radius: 10px; font-size: 0.8em; font-weight: bold; margin-right: 10px;">
-                        <?= htmlspecialchars($row['tag_nome']) ?>
-                    </span>
-                 <?php elseif ($row['tag_id']): ?>
-                     <span class="message-tag" style="/* estilo diferente talvez */">[Tag Removida]</span>
-                 <?php endif; ?>
-                <h3><?= htmlspecialchars($row['titulo']) ?></h3>
-                <!-- <h5><?= htmlspecialchars($row['id']) ?></h5> -->
-                <?php if (!empty($row['image_path'])): ?>
-                    <img src="<?= htmlspecialchars($row['image_path']) ?>" style="max-height: 200px; height: auto; margin-top: 10px;">
-                <?php endif; ?>
-                <p><?= nl2br(htmlspecialchars($row['conteudo'])) ?></p>
-                <small>
-                    Criado em: <?= date('d/m/Y H:i:s', strtotime($row['criado_em'])) ?>
-                    <?php
-
-                        $owner_id = $row['user_id'] ?? null; 
-                    ?>
-                    <?php if (!empty($row['username'])): ?>
-                        por: <?= htmlspecialchars($row['username']) ?> 
-                    <?php elseif ($owner_id): ?>
-                        por: (usuário desconhecido) 
-                    <?php else: ?>
-                         por: (autor não registrado)
-                    <?php endif; ?>
-                </small><br>
-
+        <div class="cards_list">
+            <?php while ($row = $result->fetch_assoc()): ?>
                 <?php
+                $conteudo = htmlspecialchars($row['conteudo']);
+                ?>
+                <div class="message-card  <?php
+                // Limita o tamanho da string de mensagem: 
+                if (!empty($row['image_path']) && mb_strlen($conteudo) > 250) {
+                    echo 'aumenta-card';
+                }
+                ?>">
+                    <div class="display-tag">
+                        <?php if (!empty($row['tag_nome'])): ?>
+                            <span class="message-tag
+                            <?php
+                            if ($row['tag_nome'] === 'Atualização') {
+                                echo 'tag-importante';
+                            } elseif ($row['tag_nome'] === 'Aviso') {
+                                echo 'tag-aviso';
+                            } elseif ($row['tag_nome'] === 'Informativo') {
+                                echo 'tag-informativo';
+                            } elseif ($row['tag_nome'] === 'Procura-se') {
+                                echo 'tag-procurase';
+                            }
+                            ?>
+                            ">
+                                <?= htmlspecialchars($row['tag_nome']) ?>
+                            </span>
+                        <?php elseif ($row['tag_id']): ?>
+                            <span class="message-tag" style="/* estilo diferente talvez */">[Tag Removida]</span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="message-info">
 
-                if ($logged_user_id !== null && ($owner_id == $logged_user_id || $logged_user_role === 'admin')):
-                ?><br>
-                    <a href="edit.php?id=<?= $row['id'] ?>"  class = "botao botao-editar">Editar</a>
-                    <a href="#" onclick="confirmarExclusao(<?= $row['id'] ?>)"  class = "botao botao-excluir">Excluir</a>
-                <?php endif; ?>
-            </div>
-        <?php endwhile; ?>
+
+                        <div class="card-title">
+                            <h3><?= htmlspecialchars($row['titulo']) ?></h3>
+                        </div>
+                        <div class="card-image">
+                            <?php if (!empty($row['image_path'])): ?>
+                                <img src="<?= htmlspecialchars($row['image_path']) ?>"
+                                    style="max-height: 200px; height: auto; margin-top: 10px;">
+                            <?php endif; ?>
+                        </div>
+                        <div class="display-text">
+                            <p class="message-text <?php
+                            // Limita o tamanho da string de mensagem: 
+                            if (!empty($row['image_path']) && mb_strlen($conteudo) > 250) {
+                                echo 'limita-tamanho-txt';
+                            }
+                            ?>">
+
+                                <?php
+                                echo nl2br($conteudo);
+                                ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+
+
+                        <div class="footer-member class-buttons">
+
+                            <?php
+                            if ($logged_user_id !== null && ($row['user_id'] == $logged_user_id || $logged_user_role === 'admin')):
+                                ?>
+                                <a href="edit.php?id=<?= $row['id'] ?>" class="botao botao-editar">Editar</a>
+                                <a href="#" onclick="confirmarExclusao(<?= $row['id'] ?>)" class="botao botao-excluir">Excluir</a>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="footer-member card-meta">
+                            <div>
+                                <?= date('d/m/y', strtotime($row['criado_em'])) ?>
+                            </div>
+                            <div>
+                                <?php
+                                $owner_id = $row['user_id'] ?? null;
+                                ?>
+                                <?php if (!empty($row['username'])): ?>
+                                    Por: <?= htmlspecialchars($row['username']) ?>
+                                <?php elseif ($owner_id): ?>
+                                    Por: (usuário desconhecido)
+                                <?php else: ?>
+                                    Por: (autor não registrado)
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        </div>
     <?php else: ?>
         <p>Nenhuma mensagem encontrada.</p>
     <?php endif; ?>
 
     <?php
     // É importante fechar a conexão e o resultado quando terminar
-    if ($result) { $result->close(); } 
+    if ($result) {
+        $result->close();
+    }
     $conn->close();
     ?>
 </body>
+
 </html>
