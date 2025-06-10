@@ -194,3 +194,7 @@ CREATE TABLE notificacoes (
     lido BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+ALTER TABLE `mensagens`
+ADD COLUMN `admin_status` ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+ADD COLUMN `status` ENUM('not_sent', 'sent') NOT NULL DEFAULT 'not_sent';

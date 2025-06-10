@@ -66,7 +66,9 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
         <a href="ver_perfil.php">
             <button>Ver Perfil</button>
         </a>
-
+        <a href="manage_tags.php">
+            <button>manage tags</button>
+        </a>
         <a href="../auth/logout.php" class="botao botao-excluir">Sair</a>
     </div>
 
@@ -121,6 +123,13 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                             ">
                                 <?= htmlspecialchars($row['tag_nome']) ?>
                             </span>
+                        <?php if ($row['admin_status'] === 'pending'): ?>
+                            <span>
+                                <a href="analisar_mensagem.php?id=<?= $row['id'] ?>" class="btn-analisar">
+                                    Analisar Mensagem
+                                </a>
+                            </span>
+                        <?php endif; ?>
                         <?php elseif ($row['tag_id']): ?>
                             <span class="message-tag" style="/* estilo diferente talvez */">[Tag Removida]</span>
                         <?php endif; ?>
@@ -175,6 +184,10 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                                 ?>
                                 <?php if (!empty($row['username'])): ?>
                                     Por: <?= htmlspecialchars($row['username']) ?>
+                                    <br>
+                                    mensagem enviada: <?= htmlspecialchars($row['status']) ?>
+                                    <br>
+                                    mensagem aprovada: <?= htmlspecialchars($row['admin_status']) ?>
                                 <?php elseif ($owner_id): ?>
                                     Por: (usuário desconhecido)
                                 <?php else: ?>
