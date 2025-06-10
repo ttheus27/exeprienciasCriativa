@@ -1,3 +1,6 @@
+/* =================================
+   Estilos Gerais e Tipografia
+==================================== */
 body {
   font-family: Arial, sans-serif;
   background-color: #f2f2f2;
@@ -13,19 +16,78 @@ h2 {
 a {
   color: #2980b9;
   text-decoration: none;
-  margin-right: 10px;
 }
 
 a:hover {
   text-decoration: underline;
 }
 
+hr {
+  border: 0;
+  height: 1px;
+  background: #ddd;
+  margin: 20px 0;
+}
+
+
+/* =================================
+   Layout Principal e Cabeçalho
+==================================== */
+.msg-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* NOVO: Estilos para a barra de navegação superior */
+.top-bar {
+  /* Os estilos inline no HTML já fazem a maior parte do trabalho */
+}
+
+/* NOVO: Estilos específicos para os botões neutros na barra superior */
+.top-bar button {
+  background-color: #f0f0f0;
+  color: #333;
+  font-weight: normal;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+}
+
+.top-bar button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Essas regras abaixo garantem que os botões com cor ("Editar conta" e "Sair") não sejam afetados */
+.top-bar .botao-editar,
+.top-bar .botao-excluir {
+  color: white !important; /* Garante a cor do texto correta */
+  border: none !important;  /* Remove a borda adicionada acima */
+}
+
+
+/* =================================
+   Formulários
+==================================== */
 form {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
   max-width: 500px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-top: 10px;
+}
+
+.form-group label {
+  font-weight: bold;
 }
 
 input[type="text"],
@@ -37,27 +99,76 @@ textarea {
   border: 1px solid #ccc;
 }
 
-button {
-  padding: 12px 24px;
-  background-color: #27ae60;
+
+/* =================================
+   Botões de Ação Principais
+==================================== */
+
+/* Estilo para links que devem parecer botões de ação (Ex: Editar/Excluir no card) */
+.botao {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1em;
+  font-weight: bold;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1em;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  transition: all 0.2s ease-in-out;
 }
 
-button:hover {
-  background-color: #219150;
+.botao:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.botao-editar {
+  background-color: #17a2b8;
+}
+
+.botao-editar:hover {
+  background-color: #117585;
+}
+
+.botao-excluir {
+  background-color: #dc3545;
+}
+
+.botao-excluir:hover {
+  background-color: #b42a38;
+}
+
+/* Botão "+ Nova Mensagem" */
+.button-new button {
+    background-color: #27ae60;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.button-new button:hover {
+    background-color: #219150;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+/* =================================
+   Lista de Cartões de Mensagem
+==================================== */
 .cards_list {
-  width: 95%;
-  margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  flex-flow: wrap;
   flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center; /* CORRIGIDO: Alinha os cards no centro */
 }
 
 .message-card {
@@ -66,14 +177,17 @@ button:hover {
   justify-content: space-between;
   background-color: white;
   padding: 15px;
-  margin: 0 auto;
-  margin-left: 10px;
-  margin-bottom: 20px;
   border-radius: 15px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   width: 400px;
   height: 550px;
-  transition: all 3s ease;
+  transition: all 0.5s ease;
+}
+
+/* Efeito de expandir o card */
+.aumenta-card:hover {
+  height: auto;
+  min-height: 550px;
 }
 
 .limita-tamanho-txt {
@@ -81,160 +195,161 @@ button:hover {
   -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: all 3s ease;
-}
-
-.aumenta-card:hover {
-  height: auto !important;
+  transition: -webkit-line-clamp 0.5s ease;
 }
 
 .aumenta-card:hover .limita-tamanho-txt {
-  -webkit-line-clamp: unset;
-  overflow: visible;
+  -webkit-line-clamp: initial;
 }
 
-.message-tag {
-  background-color: #e2e3e5;
-  color: #4f545c;
-  padding: 6px 15px;
-  border-radius: 10px;
-  font-size: 0.8em;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.tag-importante {
-  background-color: #dc3545;
-  color: #f8f9fa;
-}
-
-.tag-aviso {
-  background-color: #198754;
-  color: #f8f9fa;
-}
-
-.tag-informativo {
-  background-color: #0dcaf0;
-}
-
-.tag-procurase {
-  background-color: #ffc107;
+/* Conteúdo do Card */
+.display-tag {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .card-title {
-  display: flex;
-  justify-content: center;
-}
-
-.card-title h3 {
-  width: 80%;
   text-align: center;
+  margin: 10px 0;
 }
 
 .card-image {
-  display: flex;
-  justify-content: center;
+  text-align: center;
+}
+
+.card-image img {
+  max-width: 100%;
+  max-height: 200px;
+  height: auto;
+  margin-top: 10px;
 }
 
 .card-footer {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 15px;
 }
 
 .class-buttons {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.footer-member {
-  width: 40%;
+  gap: 10px;
 }
 
 .card-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.card-meta div {
-  text-align: center;
-}
-
-.msg-header {
-  display: flex;
-  flex-direction: column;
-}
-
-.header-title {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.botao {
-  padding: 12px 24px;
-  text-decoration: none;
-  border-radius: 3px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  height: 18px;
-}
-
-.botao-editar {
-  background-color: #17a2b8;
-  color: white;
-}
-
-.botao-editar:hover {
-  background-color: #117585;
-  transform: scale(1.02);
-  text-decoration: none;
-}
-
-.botao-excluir {
-  background-color: #dc3545;
-  color: white;
-}
-
-.botao-excluir:hover {
-  background-color: #b42a38;
-  transform: scale(1.02);
-  text-decoration: none;
-}
-
-.form-group {
-  margin-top: 10px;
-}
-
-.form-group label {
-  font-weight: bold;
-}
-
-.new-message {
-  display: flex;
-}
-
-.new-message .container {
-  margin: auto;
-  width: 400px;
-}
-
-.new-message .container h1 {
-  text-align: center;
-}
-
-.submit-button {
-  display: flex;
-  justify-content: center;
-}
-
-.display-tag {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  text-align: right;
+  font-size: 0.9em;
+  color: #666;
 }
 
 .status-mensagem {
-  margin-top: 3px;
+  margin-top: 10px;
   text-align: center;
+  font-size: 0.8em;
+  color: #888;
+}
+
+
+/* =================================
+   Tags
+==================================== */
+.message-tag {
+  background-color: #e2e3e5;
+  color: #4f545c;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.tag-importante { background-color: #dc3545; color: white; }
+.tag-aviso { background-color: #198754; color: white; }
+.tag-informativo { background-color: #0dcaf0; color: #212529; }
+.tag-procurase { background-color: #ffc107; color: #212529; }
+
+
+/* =================================
+   Modal de Confirmação
+==================================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    animation-name: fadeIn;
+    animation-duration: 0.4s;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 25px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation-name: slideIn;
+    animation-duration: 0.4s;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.modal-content p {
+    color: #555;
+    line-height: 1.5;
+}
+
+.modal-buttons {
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.modal-buttons .cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.modal-buttons .cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+.modal-buttons .confirm-delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.modal-buttons .confirm-delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Animações do Modal */
+@keyframes slideIn {
+  from { margin-top: -50px; opacity: 0 }
+  to { margin-top: 15%; opacity: 1 }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
 }
