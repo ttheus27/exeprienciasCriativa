@@ -89,57 +89,62 @@ if (!$tags_result) {
 </head>
 
 <body>
-    <h1>Editar Mensagem</h1>
-    <?php
+    <div class="new-message">
+        <div class="container">
+            <h1>Editar Mensagem</h1>
+            <?php
 
-    if (isset($_SESSION['message_error'])) {
-        echo '<div class="message error-message">' . htmlspecialchars($_SESSION['message_error']) . '</div>';
-        unset($_SESSION['message_error']);
-    }
-    ?>
+            if (isset($_SESSION['message_error'])) {
+                echo '<div class="message error-message">' . htmlspecialchars($_SESSION['message_error']) . '</div>';
+                unset($_SESSION['message_error']);
+            }
+            ?>
 
-    <form action="process.php" method="POST">
-        <input type="hidden" name="id" value="<?= $mensagem['id'] ?>">
-        <div class="form-group">
-            <label for="titulo">Título:</label>
-            <input type="text" id="titulo" name="titulo" value="<?= htmlspecialchars($mensagem['titulo']) ?>" required>
+            <form action="process.php" method="POST">
+                <input type="hidden" name="id" value="<?= $mensagem['id'] ?>">
+                <div class="form-group">
+                    <label for="titulo">Título:</label>
+                    <input type="text" id="titulo" name="titulo" value="<?= htmlspecialchars($mensagem['titulo']) ?>"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="conteudo">Conteúdo:</label>
+                    <textarea id="conteudo" name="conteudo" rows="5"
+                        required><?= htmlspecialchars($mensagem['conteudo']) ?></textarea>
+                    <p id="contador">0 / 500</p>
+
+                    <script>
+                        const textarea = document.getElementById('conteudo');
+                        const contador = document.getElementById('contador');
+
+                        textarea.addEventListener('input', () => {
+                            contador.textContent = `${textarea.value.length} / 500`;
+                        });
+                    </script>
+                </div>
+
+                <!--CAMPO DE TAG NA EDIÇÃO COM DADOS DO BANCO-->
+                <div class="form-group">
+                    <label for="tag_id">Tag:</label>
+                    <select name="tag_id" id="tag_id" required>
+                        <option value="">-- Selecione uma Tag --</option>
+                        <?php while ($tag = $tags_result->fetch_assoc()): ?>
+                            <option value="<?= $tag['id'] ?>" <?php
+                              if (isset($mensagem['tag_id']) && $mensagem['tag_id'] == $tag['id'])
+                                  echo ' selected';
+                              ?>>
+                   <?= htmlspecialchars($tag['nome']) ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
+                <button type="submit" name="editar">Salvar Alterações</button>
+            </form>
+            <br>
+            <a href="index.php">← Voltar para Mensagens</a>
         </div>
-        <div class="form-group">
-            <label for="conteudo">Conteúdo:</label>
-            <textarea id="conteudo" name="conteudo" rows="5"
-                required><?= htmlspecialchars($mensagem['conteudo']) ?></textarea>
-            <p id="contador">0 / 500</p>
-
-            <script>
-                const textarea = document.getElementById('conteudo');
-                const contador = document.getElementById('contador');
-
-                textarea.addEventListener('input', () => {
-                    contador.textContent = `${textarea.value.length} / 500`;
-                });
-            </script>
-        </div>
-
-        <!--CAMPO DE TAG NA EDIÇÃO COM DADOS DO BANCO-->
-        <div class="form-group">
-            <label for="tag_id">Tag:</label>
-            <select name="tag_id" id="tag_id" required>
-                <option value="">-- Selecione uma Tag --</option>
-                <?php while ($tag = $tags_result->fetch_assoc()): ?>
-                    <option value="<?= $tag['id'] ?>" <?php
-                      if (isset($mensagem['tag_id']) && $mensagem['tag_id'] == $tag['id'])
-                          echo ' selected';
-                      ?>>
-                        <?= htmlspecialchars($tag['nome']) ?>
-                    </option>
-                <?php endwhile; ?>
-            </select>
-        </div>
-
-        <button type="submit" name="editar">Salvar Alterações</button>
-    </form>
-    <br>
-    <a href="index.php">← Voltar para Mensagens</a>
+    </div>
 </body>
 
 </html>
