@@ -10,7 +10,6 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once '../includes/auth_check.php';
 include 'db.php';
 
-
 $sql = "SELECT m.*, u.username, t.nome AS tag_nome
         FROM mensagens m
         LEFT JOIN usuarios u ON m.user_id = u.id   
@@ -107,8 +106,9 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                 }
                 ?>">
                     <div class="display-tag">
-                        <?php if (!empty($row['tag_nome'])): ?>
-                            <span class="message-tag
+                        <div>
+                            <?php if (!empty($row['tag_nome'])): ?>
+                                <span class="message-tag
                             <?php
                             if ($row['tag_nome'] === 'Atualização') {
                                 echo 'tag-importante';
@@ -121,18 +121,22 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                             }
                             ?>
                             ">
-                                <?= htmlspecialchars($row['tag_nome']) ?>
-                            </span>
-                        <?php if ($row['admin_status'] === 'pending'): ?>
-                            <span>
-                                <a href="analisar_mensagem.php?id=<?= $row['id'] ?>" class="btn-analisar">
-                                    Analisar Mensagem
-                                </a>
-                            </span>
-                        <?php endif; ?>
-                        <?php elseif ($row['tag_id']): ?>
-                            <span class="message-tag" style="/* estilo diferente talvez */">[Tag Removida]</span>
-                        <?php endif; ?>
+                                    <?= htmlspecialchars($row['tag_nome']) ?>
+                                </span>
+
+                            <?php elseif ($row['tag_id']): ?>
+                                <span class="message-tag">[Tag Removida]</span>
+                            <?php endif; ?>
+                        </div>
+                        <div>
+                            <?php if ($row['admin_status'] === 'pending'): ?>
+                                <span>
+                                    <a href="analisar_mensagem.php?id=<?= $row['id'] ?>" class="btn-analisar">
+                                        <button class="tag-procurase">Analisar Mensagem</button>
+                                    </a>
+                                </span>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     <div class="message-info">
 
@@ -160,40 +164,41 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                             </p>
                         </div>
                     </div>
+                    <div>
+                        <div class="card-footer">
+                            <div class="footer-member class-buttons">
 
-                    <div class="card-footer">
-
-
-                        <div class="footer-member class-buttons">
-
-                            <?php
-                            if ($logged_user_id !== null && ($row['user_id'] == $logged_user_id || $logged_user_role === 'admin')):
-                                ?>
-                                <a href="edit.php?id=<?= $row['id'] ?>" class="botao botao-editar">Editar</a>
-                                <a href="#" onclick="confirmarExclusao(<?= $row['id'] ?>)" class="botao botao-excluir">Excluir</a>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="footer-member card-meta">
-                            <div>
-                                <?= date('d/m/y', strtotime($row['criado_em'])) ?>
-                            </div>
-                            <div>
                                 <?php
-                                $owner_id = $row['user_id'] ?? null;
-                                ?>
-                                <?php if (!empty($row['username'])): ?>
-                                    Por: <?= htmlspecialchars($row['username']) ?>
-                                    <br>
-                                    mensagem enviada: <?= htmlspecialchars($row['status']) ?>
-                                    <br>
-                                    mensagem aprovada: <?= htmlspecialchars($row['admin_status']) ?>
-                                <?php elseif ($owner_id): ?>
-                                    Por: (usuário desconhecido)
-                                <?php else: ?>
-                                    Por: (autor não registrado)
+                                if ($logged_user_id !== null && ($row['user_id'] == $logged_user_id || $logged_user_role === 'admin')):
+                                    ?>
+                                    <a href="edit.php?id=<?= $row['id'] ?>" class="botao botao-editar">Editar</a>
+                                    <a href="#" onclick="confirmarExclusao(<?= $row['id'] ?>)"
+                                        class="botao botao-excluir">Excluir</a>
                                 <?php endif; ?>
                             </div>
+
+                            <div class="footer-member card-meta">
+                                <div>
+                                    <?= date('d/m/y', strtotime($row['criado_em'])) ?>
+                                </div>
+                                <div>
+                                    <?php
+                                    $owner_id = $row['user_id'] ?? null;
+                                    ?>
+                                    <?php if (!empty($row['username'])): ?>
+                                        Por: <?= htmlspecialchars($row['username']) ?>
+                                    <?php elseif ($owner_id): ?>
+                                        Por: (usuário desconhecido)
+                                    <?php else: ?>
+                                        Por: (autor não registrado)
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-mensagem">
+                            mensagem enviada: <?= htmlspecialchars($row['status']) ?>
+                            <br>
+                            mensagem aprovada: <?= htmlspecialchars($row['admin_status']) ?>
                         </div>
                     </div>
                 </div>

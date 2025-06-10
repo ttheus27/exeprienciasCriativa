@@ -72,7 +72,7 @@ button:hover {
   border-radius: 15px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   width: 400px;
-  height: 500px;
+  height: 550px;
   transition: all 3s ease;
 }
 
@@ -177,6 +177,7 @@ button:hover {
   text-decoration: none;
   border-radius: 3px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  height: 18px;
 }
 
 .botao-editar {
@@ -225,4 +226,15 @@ button:hover {
 .submit-button {
   display: flex;
   justify-content: center;
+}
+
+.display-tag {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.status-mensagem {
+  margin-top: 3px;
+  text-align: center;
 }
