@@ -17,69 +17,62 @@ $sql = "SELECT m.*, u.username, t.nome AS tag_nome
         ORDER BY m.criado_em DESC";
 $result = $conn->query($sql);
 
-// Verifica se a consulta foi bem-sucedida
 if (!$result) {
-    ini_set('display_errors', 1); // Temporário para debug
-    error_reporting(E_ALL);     // Temporário para debug
+    ini_set('display_errors', 1); 
+    error_reporting(E_ALL);     
     die("Erro ao buscar mensagens: " . $conn->error);
 }
 
-// Pega o ID e a ROLE do usuário logado para comparações
 $logged_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-$logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< Pega a role da sessão
+$logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; 
 
 ?>
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title>Mensagens</title>
     <link rel="stylesheet" href="style.css">
-    <script>
-        function confirmarExclusao(id) {
-            // Pede confirmação antes de redirecionar para a exclusão
-            if (confirm("Tem certeza que deseja excluir esta mensagem?")) {
-                window.location.href = 'process.php?excluir=' + id;
-            }
-        }
-    </script>
 </head>
-
 <body>
-    <!-- Mensagem de Boas vindas e Logout -->
-    <div
-        style="padding: 10px; background-color: #eee; margin-bottom: 20px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+    <!-- Mensagem de Boas vindas e Logout (COM CLASSES CORRIGIDAS) -->
+    <div class="top-bar" style="padding: 10px; background-color: #eee; margin-bottom: 20px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
         <span>
             Bem-vindo, <?php echo htmlspecialchars($_SESSION['username']); ?>!
             (Role: <?php echo htmlspecialchars($logged_user_role); ?>)
         </span>
-        <a href="../auth/editar_perfil.php" class="botao botao-editar">Editar conta</a>
-        <a href="notificacoes.php">
-            <button>Ver Notificações</button>
-        </a>
-        <a href="vincular_perfil.php">
-            <button>Vincular Perfil</button>
-        </a>
-        <a href="ver_perfil.php">
-            <button>Ver Perfil</button>
-        </a>
-        <a href="manage_tags.php">
-            <button>manage tags</button>
-        </a>
-        <a href="../auth/logout.php" class="botao botao-excluir">Sair</a>
+        
+        <!-- Botões da barra superior -->
+        <div class="top-bar-buttons">
+            <a href="../auth/editar_perfil.php" class="botao botao-editar">Editar conta</a>
+            
+            <a href="notificacoes.php">
+                <button class="botao botao-neutro">Ver Notificações</button>
+            </a>
+            <a href="vincular_perfil.php">
+                <button class="botao botao-neutro">Vincular Perfil</button>
+            </a>
+            <a href="ver_perfil.php">
+                <button class="botao botao-neutro">Ver Perfil</button>
+            </a>
+            <a href="manage_tags.php">
+                <button class="botao botao-neutro">manage tags</button>
+            </a>
+            
+            <a href="../auth/logout.php" class="botao botao-excluir">Sair</a>
+        </div>
     </div>
 
     <div class="msg-header">
-
         <div class="header-title">
-
             <h1>Mensagens</h1>
-
-            <a href="create.php" class="button-new"><button style="margin-top: 20px">+ Nova Mensagem</button></a>
+            <!-- Botão de nova mensagem também precisa das classes -->
+            <a href="create.php" class="button-new">
+                <button class="botao botao-nova">+ Nova Mensagem</button>
+            </a>
         </div>
-        <!-- Exibir mensagens de feedback da sessão (sucesso/erro) -->
+        
         <?php
         if (isset($_SESSION['message_success'])) {
             echo '<div class="message success-message" style="background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; margin-bottom: 10px; border-radius: 4px;">' . htmlspecialchars($_SESSION['message_success']) . '</div>';
@@ -100,7 +93,6 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                 $conteudo = htmlspecialchars($row['conteudo']);
                 ?>
                 <div class="message-card  <?php
-                // Limita o tamanho da string de mensagem: 
                 if (!empty($row['image_path']) && mb_strlen($conteudo) > 250) {
                     echo 'aumenta-card';
                 }
@@ -132,15 +124,13 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                             <?php if ($row['admin_status'] === 'pending'): ?>
                                 <span>
                                     <a href="analisar_mensagem.php?id=<?= $row['id'] ?>" class="btn-analisar">
-                                        <button class="tag-procurase">Analisar Mensagem</button>
+                                        <button class="botao tag-procurase">Analisar Mensagem</button>
                                     </a>
                                 </span>
                             <?php endif; ?>
                         </div>
                     </div>
                     <div class="message-info">
-
-
                         <div class="card-title">
                             <h3><?= htmlspecialchars($row['titulo']) ?></h3>
                         </div>
@@ -152,15 +142,11 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                         </div>
                         <div class="display-text">
                             <p class="message-text <?php
-                            // Limita o tamanho da string de mensagem: 
                             if (!empty($row['image_path']) && mb_strlen($conteudo) > 250) {
                                 echo 'limita-tamanho-txt';
                             }
                             ?>">
-
-                                <?php
-                                echo nl2br($conteudo);
-                                ?>
+                                <?php echo nl2br($conteudo); ?>
                             </p>
                         </div>
                     </div>
@@ -172,8 +158,9 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
                                 if ($logged_user_id !== null && ($row['user_id'] == $logged_user_id || $logged_user_role === 'admin')):
                                     ?>
                                     <a href="edit.php?id=<?= $row['id'] ?>" class="botao botao-editar">Editar</a>
-                                    <a href="#" onclick="confirmarExclusao(<?= $row['id'] ?>)"
-                                        class="botao botao-excluir">Excluir</a>
+                                    
+                                    <!-- NOVO BOTÃO DE EXCLUIR: Chama a função para abrir o modal -->
+                                    <button type="button" onclick="abrirModalConfirmacao(<?= $row['id'] ?>)" class="botao botao-excluir">Excluir</button>
                                 <?php endif; ?>
                             </div>
 
@@ -209,12 +196,66 @@ $logged_user_role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // <<< 
     <?php endif; ?>
 
     <?php
-    // É importante fechar a conexão e o resultado quando terminar
     if ($result) {
         $result->close();
     }
     $conn->close();
     ?>
-</body>
 
+    <!-- ****** INÍCIO DO NOVO CONTEÚDO ****** -->
+
+    <!-- ****** MODAL DE CONFIRMAÇÃO DE EXCLUSÃO ****** -->
+    <div id="confirmDeleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirmar Exclusão</h3>
+            <p>Tem certeza que deseja excluir esta mensagem? Esta ação não pode ser desfeita.</p>
+            <div class="modal-buttons">
+                <button id="cancelDeleteBtn" class="cancel-btn">Cancelar</button>
+                <button id="confirmDeleteBtn" class="confirm-delete-btn">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
+    <!-- ******************************************* -->
+
+    <!-- ****** NOVO SCRIPT PARA CONTROLAR O MODAL ****** -->
+    <script>
+        // Seleciona os elementos do DOM
+        const modal = document.getElementById("confirmDeleteModal");
+        const cancelBtn = document.getElementById("cancelDeleteBtn");
+        const confirmBtn = document.getElementById("confirmDeleteBtn");
+
+        // Variável para guardar o ID da mensagem a ser excluída
+        let idParaExcluir = null;
+
+        // Função para ABRIR o modal e GUARDAR o ID
+        function abrirModalConfirmacao(id) {
+            idParaExcluir = id; // Guarda o ID que foi passado como argumento
+            modal.style.display = "block"; // Exibe o modal
+        }
+
+        // Ação do botão "Sim, Excluir"
+        confirmBtn.onclick = function() {
+            if (idParaExcluir !== null) {
+                // Redireciona para o script PHP, passando o ID guardado
+                window.location.href = 'process.php?excluir=' + idParaExcluir;
+            }
+        }
+
+        // Ação do botão "Cancelar" para fechar o modal
+        cancelBtn.onclick = function() {
+            idParaExcluir = null; // Limpa o ID
+            modal.style.display = "none";
+        }
+
+        // Fecha o modal se o usuário clicar fora da caixa de conteúdo
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                idParaExcluir = null; // Limpa o ID
+                modal.style.display = "none";
+            }
+        }
+    </script>
+    <!-- ********************************************** -->
+
+</body>
 </html>
