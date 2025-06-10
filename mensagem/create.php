@@ -67,7 +67,7 @@ if (!$tags_result) {
                 </div>
                 <div class="form-group">
                     <label>Imagem:</label>
-                    <input type="file" name="image" accept="image/*" required>
+                    <input type="file" name="image" accept="image/*">
                 </div>
                 <div class="submit-button">
                     <button type="submit" name="criar">Criar Mensagem</button>
