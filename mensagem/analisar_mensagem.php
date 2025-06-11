@@ -123,7 +123,7 @@ if ($stmt->execute()) {
         $ch = curl_init("https://gate.whapi.cloud/messages/text");
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Content-Type: application/json",
-            "Authorization: Bearer o3P3oYLDnnD3MCsfMQLLIsfTPcfvhApO"
+            "Authorization: Bearer ######"
         ]);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
