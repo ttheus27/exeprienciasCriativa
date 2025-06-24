@@ -79,75 +79,74 @@ if (!$tags_result) {
 }
 
 ?>
-<!DOCTYPE html>
-<html>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Mensagem</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+<?php
+$titulo_pagina = 'Cadastro';
+include '../includes/logged-header.php';
+?>
 
-<body>
-    <div class="new-message">
-        <div class="container">
-            <h1>Editar Mensagem</h1>
-            <?php
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <div class="col-xl-6 col-lg-8 col-md-10 col-sm-12">
+            <div class="form-type">
+                <form action="process.php" method="POST">
+                    <h2 class="text-center">Editar Mensagem</h2>
+                    <?php
 
-            if (isset($_SESSION['message_error'])) {
-                echo '<div class="message error-message">' . htmlspecialchars($_SESSION['message_error']) . '</div>';
-                unset($_SESSION['message_error']);
-            }
-            ?>
+                    if (isset($_SESSION['message_error'])) {
+                        echo '<div class="message error-message">' . htmlspecialchars($_SESSION['message_error']) . '</div>';
+                        unset($_SESSION['message_error']);
+                    }
+                    ?>
 
-            <form action="process.php" method="POST">
-                <input type="hidden" name="id" value="<?= $mensagem['id'] ?>">
-                <div class="form-group">
-                    <label for="titulo">Título:</label>
-                    <input type="text" id="titulo" name="titulo" value="<?= htmlspecialchars($mensagem['titulo']) ?>"
-                        required>
-                </div>
-                <div class="form-group">
-                    <label for="conteudo">Conteúdo:</label>
-                    <textarea id="conteudo" name="conteudo" rows="5"
-                        required><?= htmlspecialchars($mensagem['conteudo']) ?></textarea>
-                    <p id="contador">0 / 500</p>
+                    <input type="hidden" name="id" value="<?= $mensagem['id'] ?>">
+                    <div class="form-group">
+                        <label for="titulo">Título:</label>
+                        <input type="text" id="titulo" name="titulo"
+                            value="<?= htmlspecialchars($mensagem['titulo']) ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="conteudo">Conteúdo:</label>
+                        <textarea id="conteudo" name="conteudo" rows="5"
+                            required><?= htmlspecialchars($mensagem['conteudo']) ?></textarea>
+                        <p id="contador">0 / 500</p>
 
-                    <script>
-                        const textarea = document.getElementById('conteudo');
-                        const contador = document.getElementById('contador');
+                        <script>
+                            const textarea = document.getElementById('conteudo');
+                            const contador = document.getElementById('contador');
 
-                        textarea.addEventListener('input', () => {
-                            contador.textContent = `${textarea.value.length} / 500`;
-                        });
-                    </script>
-                </div>
+                            textarea.addEventListener('input', () => {
+                                contador.textContent = `${textarea.value.length} / 500`;
+                            });
+                        </script>
+                    </div>
 
-                <!--CAMPO DE TAG NA EDIÇÃO COM DADOS DO BANCO-->
-                <div class="form-group">
-                    <label for="tag_id">Tag:</label>
-                    <select name="tag_id" id="tag_id" required>
-                        <option value="">-- Selecione uma Tag --</option>
-                        <?php while ($tag = $tags_result->fetch_assoc()): ?>
-                            <option value="<?= $tag['id'] ?>" <?php
-                              if (isset($mensagem['tag_id']) && $mensagem['tag_id'] == $tag['id'])
-                                  echo ' selected';
-                              ?>>
-                   <?= htmlspecialchars($tag['nome']) ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <button type="submit" name="editar">Salvar Alterações</button>
-            </form>
-            <br>
-            <a href="index.php">← Voltar para Mensagens</a>
+                    <!--CAMPO DE TAG NA EDIÇÃO COM DADOS DO BANCO-->
+                    <div class="form-group">
+                        <select name="tag_id" id="tag_id" class="form-select" required>
+                            <option value="" selected>-- Selecione uma Tag --</option>
+                            <?php while ($tag = $tags_result->fetch_assoc()): ?>
+                                <option value="<?= $tag['id'] ?>" <?php
+                                  if (isset($mensagem['tag_id']) && $mensagem['tag_id'] == $tag['id'])
+                                      echo ' selected';
+                                  ?>>
+                                    <?= htmlspecialchars($tag['nome']) ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <br>
+                    <div class="d-flex justify-content-between">
+                        <a href="index.php" class="btn btn-secondary  py-2 px-4">Voltar</a>
+                        <button type="submit" name="editar" class="btn btn-success py-2 px-4">Salvar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</body>
+</div>
+<?php include '../includes/footer.php'; ?>
 
-</html>
 <?php
 if (isset($tags_result))
     $tags_result->close();

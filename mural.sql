@@ -196,5 +196,5 @@ CREATE TABLE notificacoes (
 );
 
 ALTER TABLE `mensagens`
-ADD COLUMN `admin_status` ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
-ADD COLUMN `status` ENUM('not_sent', 'sent') NOT NULL DEFAULT 'not_sent';
+ADD COLUMN `admin_status` ENUM('Pendente', 'Apovada', 'Rejeitada') NOT NULL DEFAULT 'Pendente',
+ADD COLUMN `status` ENUM('Não enviada', 'Enviada') NOT NULL DEFAULT 'Não enviada';

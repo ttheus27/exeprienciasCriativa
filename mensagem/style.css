@@ -29,7 +29,6 @@ hr {
   margin: 20px 0;
 }
 
-
 /* =================================
    Layout Principal e Cabeçalho
 ==================================== */
@@ -67,14 +66,24 @@ hr {
 .top-bar .botao-editar,
 .top-bar .botao-excluir {
   color: white !important; /* Garante a cor do texto correta */
-  border: none !important;  /* Remove a borda adicionada acima */
+  border: none !important; /* Remove a borda adicionada acima */
 }
-
 
 /* =================================
    Formulários
 ==================================== */
 form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+}
+
+.form-box {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-type {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
@@ -91,6 +100,8 @@ form {
 }
 
 input[type="text"],
+input[type="email"],
+input[type="password"],
 textarea {
   width: 95%;
   padding: 10px;
@@ -98,7 +109,6 @@ textarea {
   border-radius: 4px;
   border: 1px solid #ccc;
 }
-
 
 /* =================================
    Botões de Ação Principais
@@ -144,22 +154,21 @@ textarea {
 
 /* Botão "+ Nova Mensagem" */
 .button-new button {
-    background-color: #27ae60;
-    color: white;
-    font-weight: bold;
-    border-radius: 4px;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+  background-color: #27ae60;
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
 .button-new button:hover {
-    background-color: #219150;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #219150;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 
 /* =================================
    Lista de Cartões de Mensagem
@@ -179,8 +188,7 @@ textarea {
   padding: 15px;
   border-radius: 15px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  width: 400px;
-  height: 550px;
+  height: 100%;
   transition: all 0.5s ease;
 }
 
@@ -250,7 +258,6 @@ textarea {
   color: #888;
 }
 
-
 /* =================================
    Tags
 ==================================== */
@@ -263,93 +270,131 @@ textarea {
   font-weight: bold;
 }
 
-.tag-importante { background-color: #dc3545; color: white; }
-.tag-aviso { background-color: #198754; color: white; }
-.tag-informativo { background-color: #0dcaf0; color: #212529; }
-.tag-procurase { background-color: #ffc107; color: #212529; }
-
+.tag-importante {
+  background-color: #dc3545;
+  color: white;
+}
+.tag-aviso {
+  background-color: #198754;
+  color: white;
+}
+.tag-informativo {
+  background-color: #0dcaf0;
+  color: #212529;
+}
+.tag-procurase {
+  background-color: #ffc107;
+  color: #212529;
+}
 
 /* =================================
    Modal de Confirmação
 ==================================== */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.6);
-    animation-name: fadeIn;
-    animation-duration: 0.4s;
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  animation-name: fadeIn;
+  animation-duration: 0.4s;
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 25px;
-    border: 1px solid #888;
-    width: 90%;
-    max-width: 450px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    animation-name: slideIn;
-    animation-duration: 0.4s;
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 25px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 450px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation-name: slideIn;
+  animation-duration: 0.4s;
 }
 
 .modal-content h3 {
-    margin-top: 0;
-    color: #333;
+  margin-top: 0;
+  color: #333;
 }
 
 .modal-content p {
-    color: #555;
-    line-height: 1.5;
+  color: #555;
+  line-height: 1.5;
 }
 
 .modal-buttons {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .modal-buttons button {
-    padding: 10px 20px;
-    margin: 0 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: all 0.2s ease-in-out;
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
 }
 
 .modal-buttons .cancel-btn {
-    background-color: #6c757d;
-    color: white;
+  background-color: #6c757d;
+  color: white;
 }
 
 .modal-buttons .cancel-btn:hover {
-    background-color: #5a6268;
+  background-color: #5a6268;
 }
 
 .modal-buttons .confirm-delete-btn {
-    background-color: #dc3545;
-    color: white;
+  background-color: #dc3545;
+  color: white;
 }
 
 .modal-buttons .confirm-delete-btn:hover {
-    background-color: #c82333;
+  background-color: #c82333;
 }
 
 /* Animações do Modal */
 @keyframes slideIn {
-  from { margin-top: -50px; opacity: 0 }
-  to { margin-top: 15%; opacity: 1 }
+  from {
+    margin-top: -50px;
+    opacity: 0;
+  }
+  to {
+    margin-top: 15%;
+    opacity: 1;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0 }
-  to { opacity: 1 }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.custom-file-button input[type="file"] {
+  margin-left: -2px !important;
+}
+
+.custom-file-button input[type="file"]::-webkit-file-upload-button {
+  display: none;
+}
+
+.custom-file-button input[type="file"]::file-selector-button {
+  display: none;
+}
+
+.custom-file-button:hover label {
+  background-color: #dde0e3;
+  cursor: pointer;
 }
