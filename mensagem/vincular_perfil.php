@@ -34,35 +34,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Buscar tags
 $tags_result = $conn->query("SELECT * FROM tags");
 ?>
+<?php
+$titulo_pagina = 'Atualizar Perfil';
+include '../includes/logged-header.php';
+?>
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <div class="col-xl-6 col-lg-8 col-md-10 col-sm-12">
+            <form method="POST">
+                <h2 class="text-center">Atualizar Perfil</h2>
+                <br>
+                <label>Telefone:</label><br>
+                <input type="text" name="telefone" required><br><br>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Vincular Perfil</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h2>Atualizar Perfil</h2>
-    <form method="POST">
-        <label>Telefone:</label><br>
-        <input type="text" name="telefone" required><br><br>
+                <label>Área de Atuação:</label><br>
+                <input type="text" name="area_atuacao" required><br><br>
 
-        <label>Área de Atuação:</label><br>
-        <input type="text" name="area_atuacao" required><br><br>
+                <label>Interesses:</label><br>
+                <?php while ($tag = $tags_result->fetch_assoc()): ?>
+                    <input type="checkbox" name="interesses[]" value="<?= $tag['id'] ?>"> <?= $tag['nome'] ?><br>
+                <?php endwhile; ?>
 
-        <label>Interesses:</label><br>
-        <?php while ($tag = $tags_result->fetch_assoc()): ?>
-            <input type="checkbox" name="interesses[]" value="<?= $tag['id'] ?>"> <?= $tag['nome'] ?><br>
-        <?php endwhile; ?>
+                <br>
+                <div class="d-flex justify-content-between">
+                    <a href="index.php" class="btn btn-secondary py-2 px-4">Voltar</a>
+                    <button type="submit" class="btn btn-success py-2 px-4">Salvar</button>
+                </div>
 
-        <br>
-        <button type="submit">Salvar</button>
-    
+            </form>
 
-    </form>
-    <a href="index.php">
-        <button>Voltar</button>
-    </a>
-</body>
-</html>
+        </div>
+    </div>
+</div>
+<?php include '../includes/footer.php'; ?>
